@@ -15,16 +15,20 @@ set(PROTO_ROOT ${CMAKE_BINARY_DIR}/external/proto)
 set(PROTO_LIB_DIR ${PROTO_ROOT}/bin/lib)
 set(PROTO_INCLUDE_DIR ${PROTO_ROOT}/bin/include)
 
+#get_property(RULE_LAUNCH_COMPILE GLOBAL PROPERTY RULE_LAUNCH_COMPILE)
+
 set(configure_flags
-  "CC=${CMAKE_C_COMPILER}"
-  #"AR=${CMAKE_AR}"
-  #"STRIP=${CMAKE_STRIP}"
+  "INSTALL=${INSTALL} -p"
+  "CC=${RULE_LAUNCH_COMPILE} ${CMAKE_C_COMPILER}"
+  "AR=${CMAKE_AR}"
+  "STRIP=${CMAKE_STRIP}"
   "RANLIB=${CMAKE_RANLIB}"
   "CFLAGS=${c_options} ${includes} ${system_includes}"
   #"LDFLAGS=${CMAKE_EXE_LINKER_FLAGS}"
   --host=${CROSS_COMPILE_TARGET}
   --target=${CROSS_COMPILE_TARGET}
   --prefix=${PROTO_ROOT}
+  #--build=i586-zephyr-elf
 )
 
 ExternalProject_Add(proto
