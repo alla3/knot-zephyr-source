@@ -1,6 +1,17 @@
 cmake_minimum_required(VERSION 3.8.2)
 find_package(Git REQUIRED)
 
+macro(set_conf_file)
+  if(EXISTS ${APPLICATION_SOURCE_DIR}/prj_${BOARD}.conf)
+    set(CONF_FILE "${APPLICATION_SOURCE_DIR}/prj_${BOARD}.conf")
+  elseif(EXISTS ${APPLICATION_SOURCE_DIR}/boards/${BOARD}.conf)
+    set(CONF_FILE
+      "prj.conf ${APPLICATION_SOURCE_DIR}/boards/${BOARD}.conf")
+  else()
+    set(CONF_FILE "prj.conf")
+  endif()
+endmacro()
+
 include($ENV{ZEPHYR_BASE}/cmake/app/boilerplate.cmake NO_POLICY_SCOPE)
 
 include(ExternalProject)
@@ -51,4 +62,7 @@ add_dependencies(proto syscall_list_h_target)
 add_dependencies(proto syscall_macros_h_target)
 
 add_dependencies(app proto)
-target_sources(app PRIVATE src/main.c)
+FILE(GLOB app_sources src/*.c)
+target_sources(app PRIVATE ${app_sources})
+
+include($ENV{ZEPHYR_BASE}/samples/net/common/common.cmake)
